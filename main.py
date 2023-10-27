@@ -1,10 +1,26 @@
+
 import random, time
 import tabulate
 
 
 def qsort(a, pivot_fn):
-    ## TO DO
-    pass
+
+  if len(a) <= 1:
+    return a
+
+  else: 
+    p = pivot_fn(a)
+    l = list(filter(lambda x: x < p, a))
+    pivot = list(filter(lambda x: x == p, a)) # for when x is the pivot
+    r= list(filter(lambda x: x > p, a))
+    return qsort(l, pivot_fn) + pivot + qsort(r, pivot_fn)
+
+def first_el_pivot(a):
+  return a[0]
+
+def random_pivot(a):
+  return random.choice(a)
+
     
 def time_search(sort_fn, mylist):
     """
@@ -29,6 +45,12 @@ def time_search(sort_fn, mylist):
     return (time.time() - start) * 1000
     ###
 
+def first_element(a):
+  return a[0]
+
+def random_num(x):
+  return random.choice(x)
+
 def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]):
     """
     Compare the running time of different sorting algorithms.
@@ -40,19 +62,20 @@ def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 10
       for each method to run on each value of n
     """
     ### TODO - sorting algorithms for comparison
-    qsort_fixed_pivot = # 
-    qsort_random_pivot = #
-    tim_sort = #
+    qsort_fixed_pivot = lambda a: qsort(a, first_element)
+    qsort_random_pivot = lambda a: qsort(a, random_num)
+    tim_sort = sorted
     result = []
     for size in sizes:
         # create list in ascending order
         mylist = list(range(size))
         # shuffles list if needed
-        #random.shuffle(mylist)
+        random.shuffle(mylist)
         result.append([
             len(mylist),
             time_search(qsort_fixed_pivot, mylist),
             time_search(qsort_random_pivot, mylist),
+            time_search(tim_sort, mylist)
         ])
     return result
     ###
@@ -60,7 +83,8 @@ def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 10
 def print_results(results):
     """ change as needed for comparisons """
     print(tabulate.tabulate(results,
-                            headers=['n', 'qsort-fixed-pivot', 'qsort-random-pivot'],
+                            headers=['n', 'qsort-fixed-pivot', 
+                                     'qsort-random-pivot', 'tim-sort'],
                             floatfmt=".3f",
                             tablefmt="github"))
 
